@@ -3,7 +3,6 @@ const Joi = require('joi');
 
 // handles GET /cafes?location= 
 async function getCafes(req, res) {
-
     // retrieve query loation
     const { location } = req.query;
     // query to get all cafes with employee counts
