@@ -61,7 +61,10 @@ VITE_API_URL=http://localhost:5001
 ```
 
 3. Initialize the database (one-time)
-
+Create a PostgreSQL database, e.g.:
+```bash
+CREATE DATABASE cafe_employee_db;
+```
 Run the SQL scripts in backend/db_init using your preferred PostgreSQL client (e.g., psql, PgAdmin, DBeaver). This will:
 - Create the necessary tables (cafes and employees)
 - Seed example data
