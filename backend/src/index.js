@@ -1,19 +1,15 @@
-// imports express framework 
-const express = require('express');
-// creates express app 
-const app = express();
+// start the Express app configured in src/app.js
+const app = require('./app');
 
-require('dotenv').config();
-app.use(express.json());
+const PORT = process.env.PORT || 5001;
+const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-
-const cors = require('cors');
-const cafeRoutes = require('./routes/cafes');
-const employeeRoutes = require('./routes/employees');
-
-app.use(cors());
-app.use('/cafes', cafeRoutes);
-app.use('/employees', employeeRoutes);
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// graceful shutdown
+process.on('SIGINT', () => {
+	console.log('SIGINT - shutting down');
+	server.close(() => process.exit(0));
+});
+process.on('SIGTERM', () => {
+	console.log('SIGTERM - shutting down');
+	server.close(() => process.exit(0));
+});

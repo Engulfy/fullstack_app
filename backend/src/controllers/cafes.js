@@ -36,16 +36,22 @@ async function createCafe(req, res) {
         name: Joi.string().min(2).max(70).required(),
         description: Joi.string().max(300).required(),
         location: Joi.string().required(),
-        logo: Joi.string().optional()
+        // allow empty string or null for logo (frontend may send empty string)
+        logo: Joi.string().allow('', null).optional()
     });
 
-    // stores validation result
-    const { error, value } = schema.validate(req.body);
-    // provide error message and 400 bad request status if validation fails
-    if (error) return res.status(400).json({ error: error.details[0].message });
+    // stores validation result (guard against undefined body)
+    const { error, value } = schema.validate(req.body || {}, { abortEarly: false, stripUnknown: true });
+    if (error) {
+        // return array of messages for frontend to display or map
+        const messages = error.details.map(d => d.message);
+        return res.status(400).json({ error: messages.join('; '), details: messages });
+    }
 
-    // Obstain validated data
-    const { name, description, location, logo } = value;
+    // Obtain validated data
+    let { name, description, location, logo } = value;
+    // normalize empty logo to null for DB
+    if (logo === '') logo = null;
     try {
         const result = await pool.query(
             'INSERT INTO cafes (name, description, location, logo) VALUES ($1, $2, $3, $4) RETURNING *',
@@ -62,7 +68,8 @@ async function createCafe(req, res) {
 async function updateCafe(req, res) {
     // obtained cafe id from request parameters
     const { id } = req.params;
-    const { name, description, location, logo } = req.body;
+    let { name, description, location, logo } = req.body || {};
+    if (logo === '') logo = null;
     try {
         const result = await pool.query(
             'UPDATE cafes SET name = $1, description = $2, location = $3, logo = $4 WHERE id = $5 RETURNING *',

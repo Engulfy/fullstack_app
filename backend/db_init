@@ -1,0 +1,30 @@
+CREATE TABLE cafes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(70) NOT NULL,
+    description VARCHAR(300) NOT NULL,
+    logo TEXT,
+    location VARCHAR(200) NOT NULL
+);
+
+CREATE TABLE employees (
+    id VARCHAR(9) PRIMARY KEY,
+    name VARCHAR(70) NOT NULL,
+    email_address VARCHAR(100) UNIQUE NOT NULL,
+    phone_number VARCHAR(8) NOT NULL CHECK (phone_number ~ '^[89]\d{7}$'),
+    gender VARCHAR(6) NOT NULL CHECK (gender IN ('Male','Female')),
+    start_date DATE NOT NULL,
+    cafe_id UUID REFERENCES cafes(id) ON DELETE CASCADE
+);
+
+-- seed data
+INSERT INTO cafes(name, description, location) VALUES ('Paris_Baguette', 'Coffee and cake', 'Jurong_East');
+INSERT INTO cafes(name, description, location) VALUES ('Chateraise', 'Mochi and cake', 'WestGate');
+
+INSERT INTO employees (id, name, email_address, phone_number, gender, start_date, cafe_id)
+VALUES ('UI0000001', 'Willy', 'willy@work.com', '98261231', 'Male', '2025-10-01', (SELECT id FROM cafes where name = 'Paris_Baguette'));
+
+INSERT INTO employees (id, name, email_address, phone_number, gender, start_date, cafe_id)
+VALUES ('UI0000002', 'Bob', 'bob@work.com', '92731213', 'Male', '2025-11-01', (SELECT id FROM cafes where name = 'Paris_Baguette'));
+
+INSERT INTO employees (id, name, email_address, phone_number, gender, start_date, cafe_id)
+VALUES ('UI000003', 'Lily', 'lily@work.com', '98216131', 'Female', '2023-12-05', (SELECT id FROM cafes where name = 'Chateraise'));
