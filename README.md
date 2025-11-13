@@ -60,7 +60,7 @@ DB_DATABASE = cafedb
 VITE_API_URL=http://localhost:5001
 ```
 
-3. Initialize the database (one-time)
+4. Initialize the database (one-time)
 Create a PostgreSQL database, e.g.:
 ```bash
 CREATE DATABASE cafe_employee_db;
@@ -69,7 +69,7 @@ Run the SQL scripts in backend/db_init using your preferred PostgreSQL client (e
 - Create the necessary tables (cafes and employees)
 - Seed example data
 
-4. Start the apps (in separate terminals)
+5. Start the apps (in separate terminals)
 
 ```bash
 # Backend (development)
